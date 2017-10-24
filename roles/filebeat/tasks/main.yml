@@ -1,0 +1,3 @@
+---
+- include: transmit_installer.yml
+- include: config.yml

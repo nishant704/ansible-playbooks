@@ -1,1 +1,5 @@
 ---
+- name: Copy the template to Remote
+  template:
+    src: filebeat.yml
+    dest: /etc/filebeat/filebeat.yml

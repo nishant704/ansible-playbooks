@@ -1,0 +1,4 @@
+---
+log_file_path: /var/log/nginx.log
+elasticsearch_server: 10.0.1.153
+elk_server_port: 5044

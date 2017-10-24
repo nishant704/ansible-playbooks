@@ -20,6 +20,7 @@
 - name: Install filebeat
   apt:
     name: filebeat
+    state: present
 
 - name: Update the filebeat rc.d
   command: update-rc.d filebeat defaults 95 10

@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 - name: Download and install the public Signing key
   apt_key:
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
@@ -23,3 +24,7 @@
 
 - name: Update the filebeat rc.d
   command: update-rc.d filebeat defaults 95 10
+=======
+- name: Send the filebeat debian package to remote host
+  copy: 
+>>>>>>> bd634b8161f1ec9c2c8d6155817086d58f75c903

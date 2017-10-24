@@ -1,0 +1,25 @@
+---
+- name: Download and install the public Signing key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Install https transporter
+  apt:
+    name: apt-transport-https
+    state: present
+
+- name: Run
+  command: echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+
+
+- name: Update all packages to the latest version
+  apt:
+    upgrade: dist
+
+- name: Install filebeat
+  apt:
+    name: filebeat
+
+- name: Update the filebeat rc.d
+  command: update-rc.d filebeat defaults 95 10

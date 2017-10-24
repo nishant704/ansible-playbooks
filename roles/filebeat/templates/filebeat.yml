@@ -1,0 +1,8 @@
+filebeat.prospectors:
+- input_type: log
+  paths:
+    - "{{ log_file_path }}"
+
+
+output.elasticsearch:
+  hosts: ["{{ elasticsearch_server }}":"{{ elasticsearch_server_port }}"]

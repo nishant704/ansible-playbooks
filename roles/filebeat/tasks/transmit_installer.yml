@@ -9,9 +9,14 @@
     name: apt-transport-https
     state: present
 
-- name: Run
-  command: echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
+#- name: Run
+#  command: echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list
 
+- name: Save the repository defination
+  apt_repository:
+      repo: deb https://artifacts.elastic.co/packages/5.x/apt stable main
+      state: present
+      filename: 'elastic-5.x'
 
 - name: Update all packages to the latest version
   apt:

@@ -5,4 +5,4 @@ filebeat.prospectors:
 
 
 output.elasticsearch:
-  hosts: ["{{ elasticsearch_server }}":"{{ elasticsearch_server_port }}"]
+  hosts: ["{{ elasticsearch_server }}":"{{ elk_server_port }}"]

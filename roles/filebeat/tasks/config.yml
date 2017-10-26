@@ -3,3 +3,6 @@
   template:
     src: filebeat.yml
     dest: /etc/filebeat/filebeat.yml
+ 
+- name: restart filebeat
+  service: name=filebeat state=restarted

@@ -1,8 +1,13 @@
 filebeat.prospectors:
 - input_type: log
   paths:
-    - "{{ log_file_path }}"
+    - "/var/log/nginx/access.log"
+  document_type: access_log
 
+- input_type: log
+  paths:
+    - "/var/log/nginx/error.log"
+  document_type: error_log
 
 output.elasticsearch:
   hosts: ["{{ elasticsearch_server }}":"{{ elk_server_port }}"]

@@ -1,6 +1,3 @@
 ---
 - include: transmit_installer.yml
 - include: config.yml
-  handlers:
-   - name: Restart filebeat
-     service: name=filebeat state=restarted 

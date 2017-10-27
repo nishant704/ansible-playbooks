@@ -1,13 +1,13 @@
 filebeat.prospectors:
 - input_type: log
   paths:
-    - "/var/log/nginx/access.log"
-  document_type: access_log
-
+     - /var/log/nginx/access.log
+  fields:
+     nginx:  access_logs
 - input_type: log
   paths:
-    - "/var/log/nginx/error.log"
-  document_type: error_log
-
-output.elasticsearch:
+     - /var/log/nginx/error.log
+  fields:
+      nginx: error_logs
+output.logstash:
   hosts: ["{{ elasticsearch_server }}":"{{ elk_server_port }}"]

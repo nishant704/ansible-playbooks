@@ -1,0 +1,14 @@
+---
+  - name: Create EC2 instances
+    ec2:
+      keyname: "{{ aws-key-name }}"
+      #group: "{{ aws-sec-group-name }}"
+      instance_type: "{{ aws-instance-type }}"
+      image: "{{ aws-ami }}"
+      wait: yes
+      wait_timeout: 500
+      count: 2
+      instance_tags:
+        Name: "{{ aws-tag-name }}"
+      vpc_subnet_id: "{{ subnet-id }}"
+      group: ["{{ aws-sec-group-name }}","{{ aws-sec-group-name }}"]

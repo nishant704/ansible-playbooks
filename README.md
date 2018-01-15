@@ -19,4 +19,3 @@ Create a Seprate WIP and create PR's
 ### Who do I talk to? ###
 
 Nishant Singh 
-* Other community or team contact

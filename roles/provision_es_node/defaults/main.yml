@@ -1,9 +1,10 @@
 ---
-aws-key-name: "ansible-managed"
-aws-sec-group-name:
+aws_key_name: "ansible-managed"
+aws_sec_group_name:
     - "mayassar-es-external"
     - "elasticsearch-mayassar-production"
-aws-instance-type: "m4.4xlarge"
-aws-ami: "ami-b4a582e6"
-aws-tag-name: "temp-nish"
-subnet-id: "subnet-88d171ff"
+aws_instance_type: "m4.4xlarge"
+aws_ami: "ami-b4a582e6"
+aws_tag_name: "temp-nish"
+subnet_id: "subnet-88d171ff"
+aws_region: "ap-southeast-1"

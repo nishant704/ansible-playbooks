@@ -3,4 +3,4 @@
     connection: local
     gather_facts: true
     roles:
-      - provision_es_node
+      - provision_es_cluster

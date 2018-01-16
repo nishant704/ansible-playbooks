@@ -1,0 +1,30 @@
+---
+  - name: Create EC2 instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      count: "{{ client_instance_count }}"
+      instance_tags:
+        Name: "{{ client_tag_name }}"
+      vpc_subnet_id: "{{ subnet_id }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    register: ec2_details
+
+  - name: Generate Sequence ID for tagging
+    debug: msg="{{ item }}"
+    with_sequence: start="{{ startindex }}" end="{{ client_instance_count }}" format=%02d
+    register: sequence
+
+  - name: Tag Created instance as Masters
+    ec2_tag:
+      region: "{{ aws_region }}"
+      resource: "{{ item.0.id }}"
+      tags:
+        Name: "{{ client_tag_name }}-{{ item.1.msg }}"
+    with_together:
+      - "{{ ec2_details.instances }}"
+      - "{{ sequence.results }}"

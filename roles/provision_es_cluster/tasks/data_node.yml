@@ -1,5 +1,5 @@
 ---
-  - name: Create EC2 instances
+  - name: Create ES Data Node instances
     ec2:
       key_name: "{{ aws_key_name }}"
       instance_type: "{{ aws_instance_type }}"

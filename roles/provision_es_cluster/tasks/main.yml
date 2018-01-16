@@ -1,4 +1,4 @@
 ---
   - include: master_node.yml
-  - include: data_node.yml
-  - include: client_node.yml
+  #- include: data_node.yml
+  #- include: client_node.yml

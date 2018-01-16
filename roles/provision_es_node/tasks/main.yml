@@ -6,9 +6,36 @@
       image: "{{ aws_ami }}"
       wait: yes
       wait_timeout: 500
-      count: 2
+      count: "{{ aws_instance_count }}"
+      volumes:
+        - device_name: /dev/sdf
+          volume_type: gp2
+          volume_size: 8
+        - device_name: /dev/sdg
+          volume_type: gp2
+          volume_size: 8
+        - device_name: /dev/sdh
+          volume_type: gp2
+          volume_size: 8
       instance_tags:
         Name: "{{ aws_tag_name }}"
       vpc_subnet_id: "{{ subnet_id }}"
       region: "{{ aws_region }}"
       group: "{{ aws_sec_group_name }}"
+    register: ec2_details
+
+
+  - name: Generate Sequence ID for tagging
+    debug: msg="{{ item }}"
+    with_sequence: start="{{ startindex }}" end="{{ aws_instance_count }}" format=%02d
+    register: sequence
+
+  - name: Tag Created instance
+    ec2_tag:
+      region: "{{ aws_region }}"
+      resource: "{{ item.0.id }}"
+      tags:
+        Name: "{{ aws_tag_name }}-{{ item.1.msg }}"
+    with_together:
+      - "{{ ec2_details.instances }}"
+      - "{{ sequence.results }}"

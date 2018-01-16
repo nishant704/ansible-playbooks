@@ -1,0 +1,34 @@
+---
+  - name: Add the apt key for elasticsearch
+    apt_key:
+      url: "{{ elastic_pgp_url }}"
+      state: present
+
+  - name: Install https transport package
+    apt:
+      name: apt-transport-https
+      state: present
+
+  - name: Save the repository defination
+    command: 'echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list'
+
+  - name: Update the cache
+    apt:
+      update_cache: yes
+
+  - name: Install Elasticsearch
+    apt:
+      name: elasticsearch
+      state: present
+
+  - name: Configure ES to start automatically at  boot || Demon-Reload
+    command: '/bin/systemctl daemon-reload'
+
+  - name: Enable ES as a service
+    command: '/bin/systemctl enable elasticsearch.service'
+
+  - name: Start ES as a service now
+    service:
+      name: elasticsearch
+      state: started
+    

@@ -1,10 +1,15 @@
 ---
-  - hosts: elk
+  - hosts: master:data:client
     remote_user: ubuntu
     become: yes
     #become_user: root
     roles:
+      - { role: base }
       - { role: java }
       - { role: elasticsearch }
+  - hosts: master
+    remote_user: ubuntu
+    become: yes
+    roles:
       - { role: kibana }
       - { role: nginx }

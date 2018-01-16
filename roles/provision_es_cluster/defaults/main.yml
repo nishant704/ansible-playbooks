@@ -4,7 +4,8 @@ aws_sec_group_name:
     - "mayassar-es-external"
     - "elasticsearch-mayassar-production"
 aws_instance_type: "m4.4xlarge"
-aws_ami: "ami-b4a582e6"  # this is currently a CentOS image , need to discuss for ubuntu
+aws_ami: "ami-325d2e4e" # Ubuntu 16.04 LTS Amazon
+# "ami-b4a582e6"  # this is currently a CentOS image , need to discuss for ubuntu
 master_tag_name: "Kill-master-es"
 data_tag_name: "Kill-data-es"
 client_tag_name: "Kill-client-es"

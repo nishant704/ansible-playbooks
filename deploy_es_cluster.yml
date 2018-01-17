@@ -1,13 +1,14 @@
 ---
-  - hosts: master:data:client
+  - hosts: esmaster:esdata:esclient
     remote_user: ubuntu
+    gather_facts: no
     become: yes
     #become_user: root
     roles:
       - { role: base }
-      - { role: java }
+      - { role: java8 }
       - { role: elasticsearch }
-  - hosts: master
+  - hosts: esmaster
     remote_user: ubuntu
     become: yes
     roles:

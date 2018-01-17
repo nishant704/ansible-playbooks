@@ -3,8 +3,9 @@
   apt_repository:
    repo: ppa:webupd8team/java
 
-- name: Automatically select the Oracle License
-  shell: echo debconf shared/accepted-oracle-license-v1-1 select true | sudo debconf-set-selections
+- name: Update the apt
+  apt:
+    update_cache: yes
 
 - name: Install the Java 8 package
   apt:

@@ -2,8 +2,7 @@
   - name: Install Python first
     raw:  test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
 
-  - name: Run apt-get update & upgrade
+  - name: Run apt-get update
     apt:
-      upgrade: yes
       update_cache: yes
       cache_valid_time: 86400

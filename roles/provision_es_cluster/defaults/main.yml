@@ -12,6 +12,6 @@ client_tag_name: "Kill-client-es"
 subnet_id: "subnet-88d171ff"
 aws_region: "ap-southeast-1"
 master_instance_count: 1
-data_instance_count: 1
+data_instance_count: 2
 client_instance_count: 1
 startindex: 1

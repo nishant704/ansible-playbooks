@@ -1,0 +1,9 @@
+---
+  - name: Run apt-get update_cache
+    apt:
+      update_cache: yes
+
+  - name: Install Nginx on top of the Masters
+    apt:
+      name: nginx
+      state: present

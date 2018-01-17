@@ -1,0 +1,69 @@
+---
+  - name: Initialize the devices to use with LVM
+    command: "{{ item }}"
+    with_items:
+      - pvcreate /dev/xvdf -y
+      - pvcreate /dev/xvdg -y
+      - pvcreate /dev/xvdh -y
+
+  - name: Create The Elasticsearch Volumegroup
+    command: "vgcreate vg_elasticsearch /dev/xvdh /dev/xvdg /dev/xvdf"
+
+#  - name: Create the Logical Volumes
+#    command: "{{ item }}"
+#    with_items:
+#      - sudo lvcreate --name lv_esdata --size 20GB vg_elasticsearch
+#      - sudo lvcreate --name lv_eslog    --size 3GB  vg_elasticsearch
+  - name: Create the logical volume "lv_esdata" Ansible way
+    lvol:
+      vg: vg_elasticsearch
+      lv: lv_esdata
+      size: 20G
+
+  - name: Create the logical volume "lv_eslog" Ansible way
+    lvol:
+      vg: vg_elasticsearch
+      lv: lv_eslog
+      size: 3G
+
+  - name: Create filesystem on lv_esdata
+    filesystem:
+      fstype: ext4
+      dev: /dev/vg_elasticsearch/lv_esdata
+
+  - name: Create filesystem on lv_eslog
+    filesystem:
+      fstype: ext4
+      dev: /dev/vg_elasticsearch/lv_eslog
+
+  - name: Create the mount dir
+    file:
+      path: /elasticsearch
+      state: directory
+      mode: 0755
+
+  - name: Create sub-mount dir I
+    file:
+      path: /elasticsearch/data
+      state: directory
+      mode: 0755
+
+  - name: Create sub-mount dir II
+    file:
+      path: /elasticsearch/log
+      state: directory
+      mode: 0755
+
+  - name: Mount the data dir
+    mount:
+      path: /dev/vg_elasticsearch/lv_esdata
+      src: /elasticsearch/data/
+      fstype: ext4
+      state: present
+
+  - name: Mount the log dir
+    mount:
+      path: /dev/vg_elasticsearch/lv_eslog
+      src: /elasticsearch/log/
+      fstype: ext4
+      state: present

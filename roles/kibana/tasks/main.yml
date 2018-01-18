@@ -1,4 +1,9 @@
 ---
+
+  - name: Update the cache
+    apt:
+      update_cache: yes
+
   - name: Install Kibana
     apt:
       name: kibana
@@ -13,5 +18,4 @@
   - name: Start Kibana as a service now
     service:
       name: elasticsearch
-      state: started
-      
+      state: restarted

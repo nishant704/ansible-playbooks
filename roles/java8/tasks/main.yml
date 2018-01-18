@@ -1,7 +1,7 @@
 ---
-- name: Add Java repository ppa
-  apt_repository:
-   repo: ppa:webupd8team/java
+#- name: Add Java repository ppa
+#  apt_repository:
+#   repo: ppa:webupd8team/java
 
 - name: Update the apt
   apt:
@@ -9,6 +9,6 @@
 
 - name: Install the Java 8 package
   apt:
-   name: oracle-java8-installer
+   name: openjdk-8-jre
    state: present
    update_cache: yes

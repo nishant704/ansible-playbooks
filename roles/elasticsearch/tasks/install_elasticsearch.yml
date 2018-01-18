@@ -1,7 +1,7 @@
 ---
   - name: Add the apt key for elasticsearch
     apt_key:
-      url: "{{ elastic_pgp_url }}"
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
       state: present
 
   - name: Install https transport package
@@ -9,8 +9,17 @@
       name: apt-transport-https
       state: present
 
-  - name: Save the repository defination
-    command: 'echo "deb https://artifacts.elastic.co/packages/5.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-5.x.list'
+  - name: Create the apt source list file
+    file:
+      path: /etc/apt/sources.list.d/elastic-5.x.list
+      state: touch
+
+  - name: Insert 5.X deb in apt source
+    lineinfile:
+      path: /etc/apt/sources.list.d/elastic-5.x.list
+      line: 'deb https://artifacts.elastic.co/packages/5.x/apt stable main'
+      insertafter: EOF
+
 
   - name: Update the cache
     apt:
@@ -21,6 +30,18 @@
       name: elasticsearch
       state: present
 
+  - name: Flip the Demon Switch on default ES file
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '^#START_DAEMON='
+      line: 'START_DAEMON=true'
+
+  - name: Allow Elasticsearch to only connect from localhost
+    lineinfile:
+      path: /etc/elasticsearch/elasticsearch.yml
+      regexp: '^#network.host:'
+      line: 'network.host: localhost'
+
   - name: Configure ES to start automatically at  boot || Demon-Reload
     command: '/bin/systemctl daemon-reload'
 
@@ -30,5 +51,15 @@
   - name: Start ES as a service now
     service:
       name: elasticsearch
-      state: started
-    
+      state: restarted
+
+  - name: Wait for 10 sec
+    wait_for:
+      port: 9200
+      delay: 10
+
+
+  - name: Check if ES is running or FAIL here
+    command: "curl http://localhost:9200"
+    register: curl_result
+    failed_when: "'Failed' in curl_result.stderr"

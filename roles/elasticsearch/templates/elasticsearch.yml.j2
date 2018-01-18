@@ -1,0 +1,13 @@
+cluster.name: "{{ cluster_name }}"
+node.name: "{{ inventory_hostname }}"
+bootstrap.memory_lock: true
+network.host: _ec2_
+http.port: 9200
+cloud:
+    aws:
+        access_key: {{ aws_access_key }}
+        secret_key: {{ aws_secret_key }}
+        region: {{ aws_region }}
+
+discovery:
+    zen.hosts_provider: ec2

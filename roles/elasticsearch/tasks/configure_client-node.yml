@@ -1,0 +1,31 @@
+---
+  - name: Configure the Dedicated ES Clients [coordinating node] for load balancing queries
+    when: inventory_hostname in groups['esclient']
+    lineinfile:
+      path: /etc/elasticsearch/elasticsearch.yml
+      insertafter: EOF
+      line: "{{ item }}"
+    with_items:
+      - 'node.master: false'
+      - 'node.data: false'
+      - 'node.ingest: false'
+      - 'search.remote.connect: false'
+
+  - name: Re-Start Elasticsearch
+    when: inventory_hostname in groups['esdata']
+    service:
+      name: elasticsearch
+      state: restarted
+
+  - name: Wait 10 sec to check if 9200 is alive
+    when: inventory_hostname in groups['esdata']
+    wait_for:
+      port: 9200
+      delay: 10
+
+
+  - name: Check if ES is running or FAIL here
+    when: inventory_hostname in groups['esdata']
+    command: 'curl http://"{{ inventory_hostname }}":9200'
+    register: curl_result
+    failed_when: "'Failed' in curl_result.stderr"

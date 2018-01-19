@@ -8,9 +8,9 @@
 #      - { role: base }
 #      - { role: java8 }
       - { role: elasticsearch }
-#  - hosts: esmaster
-#    remote_user: ubuntu
-#    become: yes
-#    roles:
-#      - { role: kibana }
-#      - { role: nginx }
+  - hosts: esmaster
+    remote_user: ubuntu
+    become: yes
+    roles:
+      - { role: kibana }
+      - { role: nginx }

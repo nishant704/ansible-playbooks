@@ -70,18 +70,18 @@
   - name: Enable ES as a service
     command: '/bin/systemctl enable elasticsearch.service'
 
-  - name: Start ES as a service now
-    service:
-      name: elasticsearch
-      state: restarted
+#  - name: Start ES as a service now
+#    service:
+#      name: elasticsearch
+#      state: restarted
 
-  - name: Wait for 10 sec
-    wait_for:
-      port: 9200
-      delay: 10
+#  - name: Wait for 10 sec
+#    wait_for:
+#      port: 9200
+#      delay: 10
 
 
-  - name: Check if ES is running or FAIL here
-    command: 'curl http://"{{ inventory_hostname }}":9200'
-    register: curl_result
-    failed_when: "'Failed' in curl_result.stderr"
+#  - name: Check if ES is running or FAIL here
+#    command: 'curl http://"{{ inventory_hostname }}":9200'
+#    register: curl_result
+#    failed_when: "'Failed' in curl_result.stderr"

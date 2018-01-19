@@ -1,6 +1,6 @@
 cluster.name: "{{ cluster_name }}"
 node.name: "{{ inventory_hostname }}"
-bootstrap.memory_lock: true
+#bootstrap.memory_lock: true
 network.host: _ec2_
 http.port: 9200
 cloud:
@@ -11,3 +11,5 @@ cloud:
 
 discovery:
     zen.hosts_provider: ec2
+
+#INSERT_LINES HERE

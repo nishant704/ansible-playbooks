@@ -12,20 +12,22 @@
       - 'search.remote.connect: false'
 
   - name: Re-Start Elasticsearch
-    when: inventory_hostname in groups['esdata']
+    when: inventory_hostname in groups['esclient']
     service:
       name: elasticsearch
       state: restarted
 
   - name: Wait 10 sec to check if 9200 is alive
-    when: inventory_hostname in groups['esdata']
+    when: inventory_hostname in groups['esclient']
     wait_for:
+      host: "{{ inventory_hostname }}"
       port: 9200
       delay: 10
+      timeout: 100
 
 
   - name: Check if ES is running or FAIL here
-    when: inventory_hostname in groups['esdata']
+    when: inventory_hostname in groups['esclient']
     command: 'curl http://"{{ inventory_hostname }}":9200'
     register: curl_result
     failed_when: "'Failed' in curl_result.stderr"

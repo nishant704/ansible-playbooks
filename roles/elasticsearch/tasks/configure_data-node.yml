@@ -13,6 +13,15 @@
       - 'path.data: "{{ es_data_path }}"'
       - 'path.logs: "{{ es_log_path  }}"'
 
+
+
+  - name: Configure the data node's LVM Directory
+    file:
+      path: /elasticsearch
+      owner: elasticsearch
+      group: elasticsearch
+      recurse: yes
+
   - name: Re-Start Elasticsearch
     when: inventory_hostname in groups['esdata']
     service:
@@ -22,8 +31,10 @@
   - name: Wait 10 sec to check if 9200 is alive
     when: inventory_hostname in groups['esdata']
     wait_for:
+      host: "{{ inventory_hostname }}"
       port: 9200
       delay: 10
+      timeout: 100
 
 
   - name: Check if ES is running or FAIL here

@@ -44,6 +44,36 @@
       regexp: '^#START_DAEMON='
       line: 'START_DAEMON=true'
 
+  - name: Increase Open File Limits for ES
+    lineinfile:
+      path: /etc/security/limits.conf
+      line: 'elasticsearch - nofile 65535'
+      insertafter: EOF
+
+  - name: Open the memory Locks
+    lineinfile:
+      path:  /etc/security/limits.conf
+      line: 'elasticsearch - memlock unlimited'
+      insertafter: EOF
+
+  - name: Set The ES heap Size  - 30GB
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '^#ES_JAVA_OPTS='
+      line: 'ES_JAVA_OPTS="-Xms30g -Xmx30g"'
+
+  - name: Change MAX OPEN FILE
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '#MAX_OPEN_FILES='
+      line: 'MAX_OPEN_FILES=65536'
+
+  - name: Change MAX LOCKED MEMORY
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '^#MAX_LOCKED_MEMORY='
+      line: 'MAX_LOCKED_MEMORY=unlimited'
+
 #  - name: Allow Elasticsearch to only connect from localhost
 #    lineinfile:
 #      path: /etc/elasticsearch/elasticsearch.yml
@@ -63,6 +93,12 @@
       owner: root
       group: elasticsearch
 
+  - name: Change the service for ES to play along with STOP SWAP
+    lineinfile:
+      path: /usr/lib/systemd/system/elasticsearch.service
+      regexp: '^# Specifies the maximum file size'
+      line: 'LimitMEMLOCK=infinity'
+      insertafter: '# Specifies the maximum file size'
 
   - name: Configure ES to start automatically at  boot || Demon-Reload
     command: '/bin/systemctl daemon-reload'

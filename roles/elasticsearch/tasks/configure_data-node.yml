@@ -35,6 +35,7 @@
       port: 9200
       delay: 10
       timeout: 100
+    ignore_errors: no
 
 
   - name: Check if ES is running or FAIL here

@@ -14,7 +14,12 @@
   - name: Enable kibana as a service
     command: '/bin/systemctl enable kibana.service'
 
+  - name: Replace the template
+    template:
+      src: kibana.yml.j2
+      dest: /etc/kibana/kibana.yml
+
   - name: Start Kibana as a service now
     service:
-      name: elasticsearch
+      name: kibana
       state: restarted

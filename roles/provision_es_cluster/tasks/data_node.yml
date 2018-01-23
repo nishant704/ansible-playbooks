@@ -10,13 +10,13 @@
       volumes:
         - device_name: /dev/sdf
           volume_type: gp2
-          volume_size: 8
+          volume_size: "{{ vol_size_sdf }}"
         - device_name: /dev/sdg
           volume_type: gp2
-          volume_size: 8
+          volume_size: "{{ vol_size_sdg }}"
         - device_name: /dev/sdh
           volume_type: gp2
-          volume_size: 8
+          volume_size: "{{ vol_size_sdh }}"
       instance_tags:
         Name: "{{ data_tag_name }}"
       vpc_subnet_id: "{{ subnet_id }}"

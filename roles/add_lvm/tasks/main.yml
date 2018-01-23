@@ -18,13 +18,13 @@
     lvol:
       vg: vg_elasticsearch
       lv: lv_esdata
-      size: 20G
+      size: "{{ data_vol_size }}"
 
   - name: Create the logical volume "lv_eslog" Ansible way
     lvol:
       vg: vg_elasticsearch
       lv: lv_eslog
-      size: 3G
+      size: "{{ log_vol_size }}"
 
   - name: Create filesystem on lv_esdata
     filesystem:

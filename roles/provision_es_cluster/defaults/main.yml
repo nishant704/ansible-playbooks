@@ -16,3 +16,7 @@ master_instance_count: 3   # Make sure we have a Quorum ! NO SPLIT BRAIN
 data_instance_count: 2
 client_instance_count: 2
 startindex: 1
+
+vol_size_sdf: 10
+vol_size_sdg: 20
+vol_size_sdh: 40 

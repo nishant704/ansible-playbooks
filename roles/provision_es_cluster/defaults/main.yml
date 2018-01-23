@@ -19,4 +19,7 @@ startindex: 1
 
 vol_size_sdf: 10
 vol_size_sdg: 20
-vol_size_sdh: 40 
+vol_size_sdh: 40
+
+availability_zone_a: "{{ aws_region }}a"
+availability_zone_b: "{{ aws_region }}b"

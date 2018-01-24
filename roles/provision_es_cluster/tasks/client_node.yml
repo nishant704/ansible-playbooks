@@ -36,3 +36,36 @@
         line="{{ item.private_ip }}"
         state="present"
     with_items: "{{ ec2_details.instances }}"
+
+  - name: Destroy the client-load balancer if already exists
+    local_action:
+      module: ec2_elb_lb
+      name: "client-nodes-elasticsearch"
+      region: "{{ aws_region }}"
+      state: absent
+    ignore_errors: yes
+
+  - name: Create a Classic Load balancer for data nodes
+    local_action:
+      module: ec2_elb_lb
+      name: "client-nodes-elasticsearch"
+      state: present
+      region: "{{ aws_region }}"
+      subnets:
+        - subnet-9c3e38f8
+        - subnet-a1654ed7
+      listeners:
+        - protocol: http
+          load_balancer_port: 9200
+          instance_port: 9200
+    register: client_elb
+
+  - name: Add the data instance behind the newly created load-balancer
+    local_action:
+      module: ec2_elb
+      ec2_elbs: "client-nodes-elasticsearch"
+      instance_id: "{{ item }}"
+      region: "{{ aws_region }}"
+      state: present
+    with_items: "{{ ec2_details.instance_ids }}"
+    ignore_errors: yes

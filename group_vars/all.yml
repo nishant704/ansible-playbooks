@@ -1,2 +1,7 @@
 ---
-
+#Elasticsearch specific settings here
+master_instance_count: 3   # Make sure we have a Quorum ! NO SPLIT BRAIN
+data_instance_count: 2
+client_instance_count: 2
+startindex: 1
+###############################################################################

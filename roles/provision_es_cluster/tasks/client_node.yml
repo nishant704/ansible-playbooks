@@ -7,6 +7,10 @@
       wait: yes
       wait_timeout: 500
       count: "{{ client_instance_count }}"
+      volumes:
+          - device_name: /dev/sda1
+            volume_type: gp2
+            volume_size: 100
       instance_tags:
         Name: "{{ client_tag_name }}"
       vpc_subnet_id: "{{ subnet_id }}"

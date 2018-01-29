@@ -9,6 +9,10 @@
       count: "{{ master_instance_count }}"
       instance_tags:
         Name: "{{ master_tag_name }}"
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 100
       vpc_subnet_id: "{{ subnet_id }}"
       region: "{{ aws_region }}"
       group: "{{ aws_sec_group_name }}"

@@ -1,4 +1,24 @@
 ---
+  - name: Generate Sequence ID for hostnames
+    when: inventory_hostname in groups['esclient']
+    #debug: msg="{{ item }}"
+    #with_sequence: start="{{ startindex }}" end="{{ client_instance_count }}" format=%02d
+    set_fact:
+      indexed_hostname_client: "{{ 'mayassar-client{0:02d}'.format(play_hosts.index(inventory_hostname)+1)}}"
+
+  - name: show the hostnames
+    when: inventory_hostname in groups['esclient']
+    debug:
+      msg: "{{ hostvars[item].indexed_hostname_client }}"
+    with_items: "{{ groups['esclient'] }}"
+
+  - name: Configure Hostname for Client Node
+    when: inventory_hostname in groups['esclient']
+    hostname:
+      name: "{{ indexed_hostname_client }}"
+    with_items:
+      - "{{ groups['esclient'] }}"
+
   - name: Configure the Dedicated ES Clients [coordinating node] for load balancing queries
     when: inventory_hostname in groups['esclient']
     lineinfile:

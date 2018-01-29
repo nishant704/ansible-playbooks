@@ -1,25 +1,25 @@
 ---
 
-  - name: Generate Sequence ID for hostnames
-    when: inventory_hostname in groups['esdata']
+#  - name: Generate Sequence ID for hostnames
+#    when: inventory_hostname in groups['esdata']
     #debug: msg="{{ item }}"
     #with_sequence: start="{{ startindex }}" end="{{ client_instance_count }}" format=%02d
-    set_fact:
-      indexed_hostname_data: "{{ 'mayassar-data{0:02d}'.format(play_hosts.index(inventory_hostname)+1)}}"
+#    set_fact:
+#      indexed_hostname_data: "{{ 'mayassar-data{0:02d}'.format(play_hosts.index(inventory_hostname)+1)}}"
 
-  - name: show the hostnames
-    when: inventory_hostname in groups['esdata']
-    debug:
-      msg: "{{ hostvars[item].indexed_hostname_data }}"
-    with_items: "{{ groups['esdata'] }}"
-    register: names
+#  - name: show the hostnames
+#    when: inventory_hostname in groups['esdata']
+#    debug:
+#      msg: "{{ hostvars[item].indexed_hostname_data }}"
+#    with_items: "{{ groups['esdata'] }}"
+#    register: names
 
-  - name: Configure Hostname for Client Node
-    when: inventory_hostname in groups['esdata']
-    hostname:
-      name: "{{ indexed_hostname_data }}"
-    with_items:
-      - "{{ groups['esdata'] }}"
+#  - name: Configure Hostname for Client Node
+#    when: inventory_hostname in groups['esdata']
+#    hostname:
+#      name: "{{ indexed_hostname_data }}"
+#    with_items:
+#      - "{{ groups['esdata'] }}"
 
   - name: Configure the Dedicated ES DATA node
     when: inventory_hostname in groups['esdata']

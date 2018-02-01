@@ -89,3 +89,41 @@
         line="{{ item.private_ip }}"
         state="present"
     with_items: "{{ ec2_details_master_3.results[0].instances }}"
+
+
+  - name: Destroy the Master-load balancer if already exists
+    local_action:
+      module: ec2_elb_lb
+      name: "master-nodes-elasticsearch"
+      region: "{{ aws_region }}"
+      state: absent
+    ignore_errors: yes
+
+  - name: Create a Classic Load balancer for Master nodes
+    local_action:
+      module: ec2_elb_lb
+      name: "master-nodes-elasticsearch"
+      state: present
+      scheme: internal
+      region: "{{ aws_region }}"
+      subnets:
+        - subnet-9c3e38f8
+        - subnet-a1654ed7
+      listeners:
+        - protocol: http
+          load_balancer_port: 9200
+          instance_port: 9200
+    register: client_elb
+
+  - name: Add the master instance behind the newly created load-balancer
+    local_action:
+      module: ec2_elb
+      ec2_elbs: "client-nodes-elasticsearch"
+      instance_id: "{{ item }}"
+      region: "{{ aws_region }}"
+      state: present
+    with_items:
+      - "{{ ec2_details_master_1.results[0].instance_ids }}"
+      - "{{ ec2_details_master_2.results[0].instance_ids }}"
+      - "{{ ec2_details_master_3.results[0].instance_ids }}"
+    ignore_errors: yes

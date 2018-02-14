@@ -94,7 +94,7 @@
   - name: Destroy the Master-load balancer if already exists
     local_action:
       module: ec2_elb_lb
-      name: "master-nodes-elasticsearch"
+      name: "ops-master-nodes-elasticsearch"
       region: "{{ aws_region }}"
       state: absent
     ignore_errors: yes
@@ -102,7 +102,7 @@
   - name: Create a Classic Load balancer for Master nodes
     local_action:
       module: ec2_elb_lb
-      name: "master-nodes-elasticsearch"
+      name: "ops-master-nodes-elasticsearch"
       state: present
       scheme: internal
       region: "{{ aws_region }}"
@@ -111,14 +111,14 @@
         - subnet-a1654ed7
       listeners:
         - protocol: http
-          load_balancer_port: 9200
-          instance_port: 9200
+          load_balancer_port: 80
+          instance_port: 80
     register: client_elb
 
   - name: Add the master instance behind the newly created load-balancer
     local_action:
       module: ec2_elb
-      ec2_elbs: "client-nodes-elasticsearch"
+      ec2_elbs: "ops-master-nodes-elasticsearch"
       instance_id: "{{ item }}"
       region: "{{ aws_region }}"
       state: present

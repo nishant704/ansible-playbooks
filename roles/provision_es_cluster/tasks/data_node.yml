@@ -155,7 +155,7 @@
   - name: Destroy the data-load balancer if already exists
     local_action:
       module: ec2_elb_lb
-      name: "data-nodes-elasticsearch"
+      name: "ops-data-nodes-elasticsearch"
       region: "{{ aws_region }}"
       state: absent
     ignore_errors: yes
@@ -163,7 +163,7 @@
   - name: Create a Classic Load balancer for data nodes
     local_action:
       module: ec2_elb_lb
-      name: "data-nodes-elasticsearch"
+      name: "ops-data-nodes-elasticsearch"
       scheme: internal
       state: present
       region: "{{ aws_region }}"
@@ -179,7 +179,7 @@
   - name: Add the data instance behind the newly created load-balancer
     local_action:
       module: ec2_elb
-      ec2_elbs: "data-nodes-elasticsearch"
+      ec2_elbs: "ops-data-nodes-elasticsearch"
       instance_id: "{{ item }}"
       region: "{{ aws_region }}"
       state: present

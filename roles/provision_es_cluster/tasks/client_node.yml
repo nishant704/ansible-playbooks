@@ -91,7 +91,7 @@
   - name: Destroy the client-load balancer if already exists
     local_action:
       module: ec2_elb_lb
-      name: "client-nodes-elasticsearch"
+      name: "ops-client-nodes-elasticsearch"
       region: "{{ aws_region }}"
       state: absent
     ignore_errors: yes
@@ -99,7 +99,7 @@
   - name: Create a Classic Load balancer for data nodes
     local_action:
       module: ec2_elb_lb
-      name: "client-nodes-elasticsearch"
+      name: "ops-client-nodes-elasticsearch"
       state: present
       scheme: internal
       region: "{{ aws_region }}"
@@ -115,7 +115,7 @@
   - name: Add the data instance behind the newly created load-balancer
     local_action:
       module: ec2_elb
-      ec2_elbs: "client-nodes-elasticsearch"
+      ec2_elbs: "ops-client-nodes-elasticsearch"
       instance_id: "{{ item }}"
       region: "{{ aws_region }}"
       state: present

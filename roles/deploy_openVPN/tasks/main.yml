@@ -2,7 +2,6 @@
   - name: Run apt-get update
     apt:
       update_cache: yes
-      cache_valid_time: 86400
 
   - name: Update all packages to the latest version
     apt:
@@ -29,14 +28,13 @@
       - libpam-google-authenticator
       - iptables-persistent
 
-#  - name: Create easy rsa Directory
-#    file:
-#      path: /etc/openvpn/easy-rsa
-#      state: directory
-#      mode: 0755
-
   - name: Copy the easy-rsa files
     command: cp -r /usr/share/easy-rsa/ /etc/openvpn/
+
+  - name: Get my public IP
+    ipify_facts:
+
+  - debug: var=ipify_public_ip
 
   - name: Replace the lines in vars
     lineinfile:
@@ -50,7 +48,7 @@
       - { regexp: '^export KEY_ORG=', line: 'export KEY_ORG="Paytm"' }
       - { regexp: '^export KEY_OU=', line: 'export KEY_OU="DAAS"' }
       - { regexp: '^export KEY_NAME=', line: 'export KEY_NAME="Paytm LAB VPN"' }
-      - { regexp: '^export VPN_HOSTNAME=', line: 'export VPN_HOSTNAME=paytmlabs.daas.apps' }
+      - { regexp: '^export VPN_HOSTNAME=', line: 'export VPN_HOSTNAME="{{ ipify_public_ip }}"' }
 
   - name: Remove Interactivity of the build script
     shell: |
@@ -59,5 +57,5 @@
   - name: Transfer the script
     copy: src=configure.sh dest=/home/ubuntu mode=0777
 
-  - name: Execute the shell script
-    command: sudo /home/ubuntu/configure.sh
+  #- name: Execute the shell script
+  #  command: sudo /home/ubuntu/configure.sh

@@ -15,11 +15,20 @@ sed -i "s/dh dh2048.pem/dh easy-rsa\/keys\/dh2048.pem/g" /etc/openvpn/server.con
 sed -i "s/tls-auth ta.key/tls-auth easy-rsa\/keys\/ta.key/g" /etc/openvpn/server.conf
 
 ##
+echo >> /etc/openvpn/server.conf
+echo '# Routing' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.1.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.2.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.3.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.4.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.5.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.6.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.7.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 10.0.8.0 255.255.255.192"' >> /etc/openvpn/server.conf
 ##
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf && sysctl -p /etc/sysctl.conf
 
 iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
-
 
 echo >> /etc/openvpn/server.conf
 echo "# Google Authenticator PAM configuration"

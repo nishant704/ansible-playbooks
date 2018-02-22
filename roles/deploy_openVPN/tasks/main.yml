@@ -1,0 +1,63 @@
+---
+  - name: Run apt-get update
+    apt:
+      update_cache: yes
+      cache_valid_time: 86400
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+
+  - name: Add an Apt signing key, uses whichever key is at the URL
+    apt_key:
+      url: https://swupdate.openvpn.net/repos/repo-public.gpg
+      state: present
+
+  - name: Add the deb to source list
+    command: echo "deb http://build.openvpn.net/debian/openvpn/stable xenial main" > /etc/apt/sources.list.d/openvpn-aptrepo.list
+
+  - name: Run apt-get update
+    apt:
+      update_cache: yes
+
+  - name: Install OpenVPN and more
+    apt:
+        name: "{{ item }}"
+    with_items:
+      - openvpn
+      - easy-rsa
+      - libpam-google-authenticator
+      - iptables-persistent
+
+#  - name: Create easy rsa Directory
+#    file:
+#      path: /etc/openvpn/easy-rsa
+#      state: directory
+#      mode: 0755
+
+  - name: Copy the easy-rsa files
+    command: cp -r /usr/share/easy-rsa/ /etc/openvpn/
+
+  - name: Replace the lines in vars
+    lineinfile:
+      dest: /etc/openvpn/easy-rsa/vars
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    with_items:
+      - { regexp: '^export KEY_COUNTRY=', line: 'export KEY_COUNTRY="IN"' }
+      - { regexp: '^export KEY_PROVINCE=', line: 'export KEY_PROVINCE="ND"' }
+      - { regexp: '^export KEY_CITY=', line: 'export KEY_CITY="Delhi"' }
+      - { regexp: '^export KEY_ORG=', line: 'export KEY_ORG="Paytm"' }
+      - { regexp: '^export KEY_OU=', line: 'export KEY_OU="DAAS"' }
+      - { regexp: '^export KEY_NAME=', line: 'export KEY_NAME="Paytm LAB VPN"' }
+      - { regexp: '^export VPN_HOSTNAME=', line: 'export VPN_HOSTNAME=paytmlabs.daas.apps' }
+
+  - name: Remove Interactivity of the build script
+    shell: |
+      sed -i "s/--interact //g" /etc/openvpn/easy-rsa/build-*
+
+  - name: Transfer the script
+    copy: src=configure.sh dest=/home/ubuntu mode=0777
+
+  - name: Execute the shell script
+    command: sudo /home/ubuntu/configure.sh

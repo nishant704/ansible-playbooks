@@ -1,0 +1,8 @@
+---
+  - hosts: openvpn_server
+    remote_user: ubuntu
+    gather_facts: no
+    become: yes
+    #become_user: root
+    roles:
+      - { role: base }

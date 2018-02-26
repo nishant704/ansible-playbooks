@@ -1,10 +1,15 @@
-
 input {
   beats {
     port => "5044"
     }
 }
-
+filter {
+  grok {
+    match => ["message","\[%{TIMESTAMP_ISO8601:timestamp}\]\[%{LOGLEVEL:log_level}\]\[%{DATA:ES_SOURCE}\]%{SPACE}\[%{HOSTNAME:mayassar_host}\]%{SPACE}\[%{DATA:index_name}\]\[%{BASE10NUM:number}\]%{SPACE}%{GREEDYDATA:message_text}%{SPACE}\{%{GREEDYDATA:document_rejected}\}%{SPACE}%{GREEDYDATA:exception}",
+      "message","\[%{TIMESTAMP_ISO8601:timestamp}\]\[%{DATA:log_level}\]\[%{DATA:ES_SOURCE}\]%{SPACE}\[%{HOSTNAME:mayassar_host}\]%{SPACE}\[%{DATA:index_name}\]\[%{INT:number}\]%{SPACE}%{NOTSPACE}\[%{DATA:took_seconds}\],%{SPACE}%{NOTSPACE}\[%{BASE10NUM:took_millis}\],%{SPACE}%{NOTSPACE}\[%{DATA:types}\],%{SPACE}%{NOTSPACE}\[%{DATA:stats}\],%{SPACE}%{NOTSPACE}\[%{DATA:search_type}\]"
+    ]
+  }
+}
 output {
   elasticsearch {
     hosts => ["{{ inventory_hostname }}:9200"]

@@ -1,0 +1,3 @@
+---
+  - name: Transfer the script
+    copy: src=create_user.sh dest=/home/ubuntu mode=0777

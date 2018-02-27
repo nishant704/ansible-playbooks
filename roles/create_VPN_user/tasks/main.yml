@@ -1,3 +1,26 @@
 ---
+  - name: Clear the remote file, the hard way
+    command: rm -rf /home/ubuntu/create_user.sh
+
   - name: Transfer the script
-    copy: src=create_user.sh dest=/home/ubuntu mode=0777
+    template: src=create_user.sh.j2 dest=/home/ubuntu/create_user.sh mode=0777
+
+  - name: Execute the shell script
+    command: /home/ubuntu/create_user.sh
+
+  - name: Remove the script
+    command: rm -rf /home/ubuntu/create_ovpnfile.sh
+
+  - name: Get my public IP
+    ipify_facts:
+
+  - name: Transfer the ovpn script
+    template: src=create_ovpnfile.sh.j2 dest=/home/ubuntu/create_ovpnfile.sh mode=0777
+
+  - name: Execute the ovpn creation shell script
+    command: /home/ubuntu/create_ovpnfile.sh
+
+  - name: Fetch the openvpn file
+    fetch:
+      src: /tmp/{{ username }}.ovpn
+      dest: ~/

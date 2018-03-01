@@ -63,5 +63,5 @@
   - name: Transfer the script
     copy: src=configure.sh dest=/home/ubuntu mode=0777
 
-#  - name: Execute the shell script
-#    command: sudo /home/ubuntu/configure.sh
+  - name: Execute the shell script
+    command: sudo /home/ubuntu/configure.sh

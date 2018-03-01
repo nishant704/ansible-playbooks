@@ -20,14 +20,14 @@ sed -i "s/tls-auth ta.key/tls-auth easy-rsa\/keys\/ta.key/g" /etc/openvpn/server
 ##
 echo >> /etc/openvpn/server.conf
 echo '# Routing' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.1.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.2.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.3.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.4.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.5.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.6.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.7.0 255.255.255.192"' >> /etc/openvpn/server.conf
-echo 'push "route 10.0.8.0 255.255.255.192"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.0 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.32 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.64 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.96 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.192 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.224 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.128 255.255.255.224"' >> /etc/openvpn/server.conf
+echo 'push "route 172.21.60.160 255.255.255.224"' >> /etc/openvpn/server.conf
 echo 'status /var/log/openvpn-status.log'    >> /etc/openvpn/server.conf
 echo 'log /var/log/openvpn.log'              >> /etc/openvpn/server.conf
 

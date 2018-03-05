@@ -34,6 +34,8 @@ echo 'log /var/log/openvpn.log'              >> /etc/openvpn/server.conf
 ##
 sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf && sysctl -p /etc/sysctl.conf
 
+
+### Always Check the below value of interface with regards to the instance ##
 iptables -t nat -A POSTROUTING -s 10.8.0.0/8 -o ens3 -j MASQUERADE
 
 echo >> /etc/openvpn/server.conf

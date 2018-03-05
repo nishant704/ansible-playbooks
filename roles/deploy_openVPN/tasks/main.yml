@@ -60,6 +60,20 @@
     shell: |
       sed -i "s/--interact //g" /etc/openvpn/easy-rsa/build-*
 
+  - name: UFW rules
+    lineinfile:
+      path: /etc/default/ufw
+      regexp: '^DEFAULT_FORWARD_POLICY'
+      line: 'DEFAULT_FORWARD_POLICY="ACCEPT"'
+
+  - name: Run ufw commands
+    command: "{{ item }}"
+    with_items:
+      - ufw allow 1194/udp
+      - ufw allow OpenSSH
+      - ufw disable
+      - ufw enable
+      
   - name: Transfer the script
     copy: src=configure.sh dest=/home/ubuntu mode=0777
 

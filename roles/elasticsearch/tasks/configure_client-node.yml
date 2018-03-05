@@ -30,6 +30,7 @@
       - 'node.data: false'
       - 'node.ingest: false'
       - 'search.remote.connect: false'
+      - 'path.logs: "{{ es_log_path  }}"'
 
   - name: Re-Start Elasticsearch
     when: inventory_hostname in groups['esclient']

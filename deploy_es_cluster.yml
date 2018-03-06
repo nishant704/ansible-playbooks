@@ -6,6 +6,7 @@
     #become_user: root
     roles:
       - { role: base }
+      #- { role: add_lvm }
       - { role: java8 }
       - { role: elasticsearch }
   - hosts: esmaster

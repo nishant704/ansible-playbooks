@@ -56,14 +56,17 @@
 
   - name: Mount the data dir
     mount:
-      path: /dev/vg_elasticsearch/lv_esdata
-      src: /elasticsearch/data/
+      path: /elasticsearch/data/
+      src: /dev/vg_elasticsearch/lv_esdata
       fstype: ext4
       state: present
 
   - name: Mount the log dir
     mount:
-      path: /dev/vg_elasticsearch/lv_eslog
-      src: /elasticsearch/log/
+      path: /elasticsearch/log/
+      src: /dev/vg_elasticsearch/lv_eslog
       fstype: ext4
       state: present
+
+  - name: Mount Now
+    command: mount -a 

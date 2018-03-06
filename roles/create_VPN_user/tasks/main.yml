@@ -24,3 +24,6 @@
     fetch:
       src: /tmp/{{ username }}.ovpn
       dest: ~/
+
+  - name: Restart
+    command: service openvpn@server restart

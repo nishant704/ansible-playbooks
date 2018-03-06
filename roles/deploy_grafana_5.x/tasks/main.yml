@@ -19,20 +19,33 @@
     with_items:
       - grafana
       - apt-transport-https
+      - nginx
 
-  - name: Run Grafana on Port 80 instead of 3000
-    lineinfile:
-       path: /etc/grafana/grafana.ini
-       regexp: '^;http_port ='
-       line: 'http_port = 80'
+#  - name: Run Grafana on Port 80 instead of 3000
+#    lineinfile:
+#       path: /etc/grafana/grafana.ini
+#       regexp: '^;http_port ='
+#       line: 'http_port = 80'
 
-  - name: Bind grafna-server Process to privilaged port
-    command: setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
+#  - name: Bind grafna-server Process to privilaged port
+#    command: setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
+
+
+  - name: Configure Nginx to serve Grafana
+    template:
+      src: default.j2
+      dest: /etc/nginx/sites-available/default
+
+  - name: Start Nginx as a service now
+    service:
+      name: nginx
+      state: restarted
+
 
   - name: Start Grafana as a service
     service:
       name: grafana-server
-      state: restart
+      state: restarted
 
   - name: Configure the Grafana server to start at boot time
     command: 'sudo update-rc.d grafana-server defaults'

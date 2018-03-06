@@ -32,7 +32,17 @@
       - 'node.data: false'
       - 'node.ingest: false'
       - 'discovery.zen.minimum_master_nodes: 2'
-      - 'path.logs: "{{ es_log_path  }}"'
+      - '######################'
+      - 'path.logs: "{{ es_log_path }}"'
+
+  - name: Configure the master node's LVM Directory
+    when: inventory_hostname in groups['esmaster']
+    file:
+      path: /elasticsearch
+      owner: elasticsearch
+      group: elasticsearch
+      recurse: yes
+
 
   - name: Re-Start Elasticsearch
     when: inventory_hostname in groups['esmaster']

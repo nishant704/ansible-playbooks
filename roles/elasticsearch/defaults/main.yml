@@ -1,5 +1,5 @@
 ---
-cluster_name: "ops-logging"
+cluster_name: "stagging-mayassar"
 aws_access_key: "XXXXXXXXXXXXX"
 aws_secret_key: "XXXXXXXXXXXXXXXYYYYYYYYYYYYY"
 aws_region: ap-south-1

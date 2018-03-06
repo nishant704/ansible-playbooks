@@ -5,4 +5,4 @@
     become: yes
     #become_user: root
     roles:
-      - { role: deploy_grafana_4.x }
+      - { role: deploy_grafana_5.x }

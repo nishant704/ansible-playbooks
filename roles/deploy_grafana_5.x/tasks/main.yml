@@ -30,6 +30,11 @@
 #  - name: Bind grafna-server Process to privilaged port
 #    command: setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
 
+  - name: Replace The config
+    template:
+      src: grafana.ini.j2
+      dest: /etc/grafana/grafana.ini
+      backup: yes
 
   - name: Configure Nginx to serve Grafana
     template:

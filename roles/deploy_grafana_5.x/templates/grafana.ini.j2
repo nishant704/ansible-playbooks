@@ -42,7 +42,13 @@ enable_gzip = false
 ;socket =
 
 [database]
-
+type = mysql
+host = {{ database_endpoint }}:3306
+name = {{ database_name }}
+user = {{ database_username }}
+# If the password contains # or ; you have to wrap it with triple quotes. Ex """#password;"""
+password = {{ database_password }}
+ssl_mode = disable
 [session]
 provider = file
 

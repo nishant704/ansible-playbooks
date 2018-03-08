@@ -1,3 +1,4 @@
+# Ansible Maintained #
 [paths]
 
 [server]
@@ -56,7 +57,27 @@ provider = file
 
 [analytics]
 
+#################################### Security ############################                            │
 [security]
+admin_user = blacktiger
+admin_password = reconalpha
+
+# used for signing
+secret_key = BLquQAJekxulajMKAO
+
+# Auto-login remember days
+login_remember_days = 0
+cookie_username = grafana_admin
+cookie_remember_name = grafana_admin_remember
+
+# disable gravatar profile images
+disable_gravatar = false
+
+# data source proxy whitelist (ip_or_domain:port separated by spaces)
+data_source_proxy_whitelist =
+
+# disable protection against brute force login attempts
+disable_brute_force_login_protection = false
 
 [snapshots]
 
@@ -139,8 +160,8 @@ enabled = false
 
 #################################### Auth LDAP ##########################
 [auth.ldap]
-;enabled = false
-;config_file = /etc/grafana/ldap.toml
+enabled = true
+config_file = /etc/grafana/ldap.toml
 ;allow_sign_up = true
 
 

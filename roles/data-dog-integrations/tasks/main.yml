@@ -1,0 +1,14 @@
+---
+  - name: Place the elasticsearch data-dog integration on elasticsearch nodes
+    when: inventory_hostname in groups['esdata'] or inventory_hostname in groups['esmaster'] or  inventory_hostname in groups['esclient']
+    template:
+      src: elastic.yaml.j2
+      dest: /etc/datadog-agent/conf.d/elastic.yaml
+      owner: dd-agent
+      group: dd-agent
+
+  - name: restart datadog-agent
+    when: inventory_hostname in groups['esdata'] or inventory_hostname in groups['esmaster'] or  inventory_hostname in groups['esclient']
+    service:
+      name: datadog-agent
+      state: restarted

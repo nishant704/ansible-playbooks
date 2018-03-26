@@ -1,0 +1,14 @@
+---
+ - name: Place the file on remote host
+   copy:
+     src: jprof-cleaner.sh
+     dest: /elasticsearch/jprof-cleaner.sh
+     mode: 0777
+#     state: file
+
+ - name: Set system cron
+   cron:
+     name: "Clean java heap dumps"
+     minute: "0"
+     hour: "*/3"
+     job: "/elasticsearch/jprof-cleaner.sh"

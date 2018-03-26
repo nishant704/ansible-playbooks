@@ -1,0 +1,19 @@
+---
+  - hosts: esmaster:esdata:esclient
+    remote_user: ubuntu
+    gather_facts: no
+    become: yes
+    #become_user: root
+    roles:
+      - { role: base }
+      #- { role: add_lvm }
+      - { role: java8 }
+      - { role: elasticsearch }
+  - hosts: esmaster
+    remote_user: ubuntu
+    become: yes
+    roles:
+      - { role: kibana }
+      - { role: nginx }
+    tags:
+        - kibana

@@ -1,0 +1,6 @@
+---
+stag_grfana_url: "http://mayassar.stg.paytmlabs.com/"
+database_endpoint: "mayassar-stg-grafana.cjfnr6ebdaef.ap-south-1.rds.amazonaws.com"
+database_name: "mayassarSTGgrafana"
+database_password: "Rabs23qHmYaPqtwspXua"
+database_username: "admintrap"

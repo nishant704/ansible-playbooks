@@ -1,0 +1,31 @@
+filebeat.prospectors:
+- input_type: log
+  paths:
+     - /elasticsearch/log/mayassar-es-prod_deprecation.log
+  fields:
+     elasticsearch: deprecation_log
+
+- input_type: log
+  paths:
+     - /elasticsearch/log/mayassar-es-prod_index_indexing_slowlog.log
+  fields:
+      elasticsearch: slow_indexing_log
+
+- input_type: log
+  paths:
+     - /elasticsearch/log/mayassar-es-prod_index_search_slowlog.log
+  fields:
+      elasticsearch: slow_search_log
+
+- input_type: log
+  paths:
+     - /elasticsearch/log/mayassar-es-prod.log
+  multiline.pattern: '^\['
+  multiline.negate: true
+  multiline.match: after
+  fields:
+      elasticsearch: mayassar_es_prod_log
+ 
+
+output.logstash:
+  hosts: ["{{ elasticsearch_server }}:{{ elk_server_port }}"]

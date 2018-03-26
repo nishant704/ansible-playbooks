@@ -1,0 +1,55 @@
+---
+#  - name: Generate Sequence ID for hostnames
+#    when: inventory_hostname in groups['esclient']
+    #debug: msg="{{ item }}"
+    #with_sequence: start="{{ startindex }}" end="{{ client_instance_count }}" format=%02d
+#    set_fact:
+#      indexed_hostname_client: "{{ 'mayassar-client{0:02d}'.format(play_hosts.index(inventory_hostname)+1)}}"
+
+#  - name: show the hostnames
+#    when: inventory_hostname in groups['esclient']
+#    debug:
+#      msg: "{{ hostvars[item].indexed_hostname_client }}"
+#    with_items: "{{ groups['esclient'] }}"
+
+#  - name: Configure Hostname for Client Node
+#    when: inventory_hostname in groups['esclient']
+#    hostname:
+#      name: "{{ indexed_hostname_client }}"
+#    with_items:
+#      - "{{ groups['esclient'] }}"
+
+  - name: Configure the Dedicated ES Clients [coordinating node] for load balancing queries
+    when: inventory_hostname in groups['esclient']
+    lineinfile:
+      path: /etc/elasticsearch/elasticsearch.yml
+      insertafter: EOF
+      line: "{{ item }}"
+    with_items:
+      - 'node.master: false'
+      - 'node.data: false'
+      - 'node.ingest: false'
+      - 'search.remote.connect: false'
+      - 'path.logs: "{{ es_log_path  }}"'
+
+  - name: Re-Start Elasticsearch
+    when: inventory_hostname in groups['esclient']
+    service:
+      name: elasticsearch
+      state: restarted
+
+  - name: Wait 10 sec to check if 9200 is alive
+    when: inventory_hostname in groups['esclient']
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      port: 9200
+      delay: 10
+      timeout: 100
+    ignore_errors: no
+
+
+  - name: Check if ES is running or FAIL here
+    when: inventory_hostname in groups['esclient']
+    command: 'curl http://"{{ inventory_hostname }}":9200'
+    register: curl_result
+    failed_when: "'Failed' in curl_result.stderr"

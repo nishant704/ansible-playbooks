@@ -1,4 +1,4 @@
 ---
 log_file_path: /var/log/nginx.log
-elasticsearch_server: 10.0.1.153
+elasticsearch_server: internal-ops-data-nodes-elasticsearch-598830562.ap-southeast-1.elb.amazonaws.com
 elk_server_port: 5044

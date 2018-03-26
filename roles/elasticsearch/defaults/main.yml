@@ -1,0 +1,7 @@
+---
+cluster_name: "stagging-mayassar"
+aws_access_key: "XXXXXXXXXXXXX"
+aws_secret_key: "XXXXXXXXXXXXXXXYYYYYYYYYYYYY"
+aws_region: ap-south-1
+es_data_path: '/elasticsearch/data'
+es_log_path: '/elasticsearch/log'

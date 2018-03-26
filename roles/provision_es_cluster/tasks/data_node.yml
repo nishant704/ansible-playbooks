@@ -1,0 +1,192 @@
+---
+  - name: Create ES Ist Data Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 100
+        - device_name: /dev/sdf
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdf }}"
+        - device_name: /dev/sdg
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdg }}"
+        - device_name: /dev/sdh
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdh }}"
+      instance_tags:
+        Name: "{{ data_tag_name_1 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - a
+    register: ec2_details_data_1
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esdata\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items: "{{ ec2_details_data_1.results[0].instances }}"
+
+
+  - name: Create ES IInd Data Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 100
+        - device_name: /dev/sdf
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdf }}"
+        - device_name: /dev/sdg
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdg }}"
+        - device_name: /dev/sdh
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdh }}"
+      instance_tags:
+        Name: "{{ data_tag_name_2 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - b
+    register: ec2_details_data_2
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esdata\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items: "{{ ec2_details_data_2.results[0].instances }}"
+
+
+  - name: Create ES IIIrd Data Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 100
+        - device_name: /dev/sdf
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdf }}"
+        - device_name: /dev/sdg
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdg }}"
+        - device_name: /dev/sdh
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdh }}"
+      instance_tags:
+        Name: "{{ data_tag_name_3 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - a
+    register: ec2_details_data_3
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esdata\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items: "{{ ec2_details_data_3.results[0].instances }}"
+
+  - name: Create ES IIIrd Data Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+        - device_name: /dev/sda1
+          volume_type: gp2
+          volume_size: 100
+        - device_name: /dev/sdf
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdf }}"
+        - device_name: /dev/sdg
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdg }}"
+        - device_name: /dev/sdh
+          volume_type: gp2
+          volume_size: "{{ vol_size_sdh }}"
+      instance_tags:
+        Name: "{{ data_tag_name_4 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - a
+    register: ec2_details_data_4
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esdata\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items: "{{ ec2_details_data_4.results[0].instances }}"
+
+
+###############################################################################
+
+  - name: Destroy the data-load balancer if already exists
+    local_action:
+      module: ec2_elb_lb
+      name: "ops-data-nodes-elasticsearch"
+      region: "{{ aws_region }}"
+      state: absent
+    ignore_errors: yes
+
+  - name: Create a Classic Load balancer for data nodes
+    local_action:
+      module: ec2_elb_lb
+      name: "ops-data-nodes-elasticsearch"
+      scheme: internal
+      state: present
+      region: "{{ aws_region }}"
+      subnets:
+        - subnet-9c3e38f8
+        - subnet-a1654ed7
+      listeners:
+        - protocol: http
+          load_balancer_port: 9200
+          instance_port: 9200
+    register: data_elb
+
+  - name: Add the data instance behind the newly created load-balancer
+    local_action:
+      module: ec2_elb
+      ec2_elbs: "ops-data-nodes-elasticsearch"
+      instance_id: "{{ item }}"
+      region: "{{ aws_region }}"
+      state: present
+    with_items:
+      - "{{ ec2_details_data_1.results[0].instance_ids }}"
+      - "{{ ec2_details_data_2.results[0].instance_ids }}"
+      - "{{ ec2_details_data_3.results[0].instance_ids }}"
+      - "{{ ec2_details_data_4.results[0].instance_ids }}"
+    ignore_errors: yes
+    ### IGNORE_ERROR ###

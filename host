@@ -9,7 +9,18 @@
 10.0.3.202
 10.0.2.205
 
+[mayassar-prod]
+172.16.14.73
+172.16.14.74
+172.16.14.75
+172.16.14.76
+172.16.15.75
+172.16.15.74
+172.16.15.76
+172.16.15.73
+
+
 
 [all:vars]
-ansible_ssh_user=ubuntu
-ansible_ssh_private_key_file=~/superb-prod-app.pem 
+ansible_ssh_user=nsingh4
+ansible_ssh_private_key_file=~/.ssh/id_rsa 

@@ -1,0 +1,126 @@
+---
+  - name: Create ES Ist Client Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+          - device_name: /dev/sda1
+            volume_type: gp2
+            volume_size: 100
+      instance_tags:
+        Name: "{{ client_tag_name_1 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - a
+    register: ec2_details_client_1
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esclient\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items:
+      - "{{ ec2_details_client_1.results[0].instances }}"
+
+
+  - name: Create ES IInd Client Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+          - device_name: /dev/sda1
+            volume_type: gp2
+            volume_size: 100
+      instance_tags:
+        Name: "{{ client_tag_name_2 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - b
+    register: ec2_details_client_2
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esclient\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items:
+      - "{{ ec2_details_client_2.results[0].instances }}"
+
+  - name: Create ES IIIrd Client Node instances
+    ec2:
+      key_name: "{{ aws_key_name }}"
+      instance_type: "{{ aws_instance_type }}"
+      image: "{{ aws_ami }}"
+      wait: yes
+      wait_timeout: 500
+      volumes:
+          - device_name: /dev/sda1
+            volume_type: gp2
+            volume_size: 100
+      instance_tags:
+        Name: "{{ client_tag_name_3 }}"
+      vpc_subnet_id: "{{ subnet_ids[item] }}"
+      region: "{{ aws_region }}"
+      group: "{{ aws_sec_group_name }}"
+    with_items:
+      - a
+    register: ec2_details_client_3
+
+  - name: Add Instances to local inventory file
+    local_action:
+      lineinfile path="~/ansible-environments/hosts"
+        insertafter="\[esclient\]"
+        line="{{ item.private_ip }}"
+        state="present"
+    with_items:
+      - "{{ ec2_details_client_3.results[0].instances }}"
+
+
+  - name: Destroy the client-load balancer if already exists
+    local_action:
+      module: ec2_elb_lb
+      name: "ops-client-nodes-elasticsearch"
+      region: "{{ aws_region }}"
+      state: absent
+    ignore_errors: yes
+
+  - name: Create a Classic Load balancer for data nodes
+    local_action:
+      module: ec2_elb_lb
+      name: "ops-client-nodes-elasticsearch"
+      state: present
+      scheme: internal
+      region: "{{ aws_region }}"
+      subnets:
+        - subnet-9c3e38f8
+        - subnet-a1654ed7
+      listeners:
+        - protocol: http
+          load_balancer_port: 9200
+          instance_port: 9200
+    register: client_elb
+
+  - name: Add the data instance behind the newly created load-balancer
+    local_action:
+      module: ec2_elb
+      ec2_elbs: "ops-client-nodes-elasticsearch"
+      instance_id: "{{ item }}"
+      region: "{{ aws_region }}"
+      state: present
+    with_items:
+      - "{{ ec2_details_client_1.results[0].instance_ids }}"
+      - "{{ ec2_details_client_2.results[0].instance_ids }}"
+      - "{{ ec2_details_client_3.results[0].instance_ids }}"
+    ignore_errors: yes

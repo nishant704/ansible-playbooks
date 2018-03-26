@@ -1,0 +1,25 @@
+---
+  - name: Update the cache
+    apt:
+      update_cache: yes
+
+  - name: Install Kibana
+    apt:
+      name: kibana
+      state: present
+
+  - name: Configure Kibana to start at boot || Demon-Reload
+    command: '/bin/systemctl daemon-reload'
+
+  - name: Enable kibana as a service
+    command: '/bin/systemctl enable kibana.service'
+
+  - name: Replace the template
+    template:
+      src: kibana.yml.j2
+      dest: /etc/kibana/kibana.yml
+
+  - name: Start Kibana as a service now
+    service:
+      name: kibana
+      state: restarted

@@ -1,0 +1,7 @@
+- hosts: esdata
+  remote_user: ubuntu
+  become: yes
+  roles:
+    - { role: logstash }
+  tags:
+      - logstash

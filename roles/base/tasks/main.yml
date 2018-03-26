@@ -1,0 +1,39 @@
+---
+  - name: Install Python first
+    raw:  test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+  - name: Run apt-get update
+    apt:
+      update_cache: yes
+      cache_valid_time: 86400
+
+  - name: Install python tools
+    apt:
+      name: "{{ item }}"
+    with_items:
+      - python-setuptools
+      - python-pip
+      - build-essential
+      - python-dev
+
+  - name: Install boto
+    pip:
+      name: boto
+
+  - name: Get EC2 facts
+    action: ec2_facts
+
+  - name: Retrieve all tags on an instance
+    local_action:
+      module:  ec2_tag
+      region: '{{ ansible_ec2_placement_region }}'
+      resource: '{{ ansible_ec2_instance_id }}'
+      state: list
+    become: false
+    register: ec2_tags
+
+  - name: Set hostname as of ec2 tag
+    hostname:
+      name: "{{ ec2_tags.tags.Name }}"
+    with_items:
+      - "{{ groups['all'] }}"

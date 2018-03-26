@@ -1,0 +1,5 @@
+---
+  - include: install_elasticsearch.yml
+  - include: configure_master.yml
+  - include: configure_data-node.yml
+  - include: configure_client-node.yml

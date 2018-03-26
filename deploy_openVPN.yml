@@ -1,0 +1,9 @@
+---
+  - hosts: openvpn_server
+    remote_user: ubuntu
+    gather_facts: yes
+    become: yes
+    #become_user: root
+    roles:
+    #  - {role:  base }
+      - { role: deploy_openVPN }

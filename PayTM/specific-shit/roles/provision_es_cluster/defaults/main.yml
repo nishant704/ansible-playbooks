@@ -1,0 +1,41 @@
+---
+aws_key_name: "ansible-managed"
+aws_sec_group_name:
+    - "mayassar-es-external"
+    - "elasticsearch-mayassar-production"
+    - "Test_nishant"
+aws_instance_type: "m4.4xlarge"
+aws_ami: "ami-325d2e4e" # Ubuntu 16.04 LTS Amazon
+# "ami-b4a582e6"  # this is currently a CentOS image , need to discuss for ubuntu
+master_tag_name_1: "ops-master-es-01"
+master_tag_name_2: "ops-master-es-02"
+master_tag_name_3: "ops-master-es-03"
+#########################################This is bad ^^ i know @Nishant ###########
+#data_tag_name: "Kill-data-es"
+data_tag_name_1: "ops-data-es-01"
+data_tag_name_2: "ops-data-es-02"
+data_tag_name_3: "ops-data-es-03"
+data_tag_name_4: "ops-data-es-04"
+
+################Should be cleaned up later #########################################
+#client_tag_name: "Kill-client-es"
+
+client_tag_name_1: "ops-client-es-01"
+client_tag_name_2: "ops-client-es-02"
+client_tag_name_3: "ops-client-es-03"
+####################################################################################
+subnet_ids:
+  a: subnet-9c3e38f8
+  b: subnet-88d171ff
+aws_region: "ap-southeast-1"
+## This is not working currently # master_instance_count: 3   # Make sure we have a Quorum ! NO SPLIT BRAIN
+data_instance_count: 2
+client_instance_count: 2
+startindex: 1
+
+vol_size_sdf: 10
+vol_size_sdg: 20
+vol_size_sdh: 40
+
+availability_zone_a: "{{ aws_region }}a"
+availability_zone_b: "{{ aws_region }}b"

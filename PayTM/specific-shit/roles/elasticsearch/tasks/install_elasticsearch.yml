@@ -1,0 +1,123 @@
+---
+  - name: Add the apt key for elasticsearch
+    apt_key:
+      url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+      state: present
+
+  - name: Install https transport package
+    apt:
+      name: apt-transport-https
+      state: present
+
+  - name: Create the apt source list file
+    file:
+      path: /etc/apt/sources.list.d/elastic-5.x.list
+      state: touch
+
+  - name: Insert 5.X deb in apt source
+    lineinfile:
+      path: /etc/apt/sources.list.d/elastic-5.x.list
+      line: 'deb https://artifacts.elastic.co/packages/5.x/apt stable main'
+      insertafter: EOF
+
+
+  - name: Uninstall the ec2 disovery plug if exists
+    command: "sudo /usr/share/elasticsearch/bin/elasticsearch-plugin remove discovery-ec2"
+    ignore_errors: yes
+
+
+  - name: Update the cache
+    apt:
+      update_cache: yes
+
+  - name: Install Elasticsearch
+    apt:
+      name: elasticsearch
+      state: present
+
+  - name: Install the ec2 discover plugin
+    command: "sudo /usr/share/elasticsearch/bin/elasticsearch-plugin install discovery-ec2"
+
+  - name: Flip the Demon Switch on default ES file
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '^#START_DAEMON='
+      line: 'START_DAEMON=true'
+
+  - name: Increase Open File Limits for ES
+    lineinfile:
+      path: /etc/security/limits.conf
+      line: 'elasticsearch - nofile 65535'
+      insertafter: EOF
+
+  - name: Open the memory Locks
+    lineinfile:
+      path:  /etc/security/limits.conf
+      line: 'elasticsearch - memlock unlimited'
+      insertafter: EOF
+
+  - name: Set The ES heap Size  - 30GB
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '^#ES_JAVA_OPTS='
+      line: 'ES_JAVA_OPTS="-Xms30g -Xmx30g"'
+
+  - name: Change MAX OPEN FILE
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '#MAX_OPEN_FILES='
+      line: 'MAX_OPEN_FILES=65536'
+
+  - name: Change MAX LOCKED MEMORY
+    lineinfile:
+      path: /etc/default/elasticsearch
+      regexp: '^#MAX_LOCKED_MEMORY='
+      line: 'MAX_LOCKED_MEMORY=unlimited'
+
+#  - name: Allow Elasticsearch to only connect from localhost
+#    lineinfile:
+#      path: /etc/elasticsearch/elasticsearch.yml
+#      regexp: '^#network.host:'
+#      line: 'network.host: localhost'
+
+#  - name: Turn on Memory locking aka Swap (mlock)
+#    lineinfile:
+#      path: /etc/elasticsearch/elasticsearch.yml
+#      regexp: '^#bootstrap.memory_lock:'
+#      line: 'bootstrap.memory_lock: true'
+
+  - name: Replace the configured Template
+    template:
+      src: elasticsearch.yml.j2
+      dest: /etc/elasticsearch/elasticsearch.yml
+      owner: root
+      group: elasticsearch
+
+  - name: Change the service for ES to play along with STOP SWAP
+    lineinfile:
+      path: /usr/lib/systemd/system/elasticsearch.service
+      regexp: '^# Specifies the maximum file size'
+      line: 'LimitMEMLOCK=infinity'
+      insertafter: '# Specifies the maximum file size'
+
+  - name: Configure ES to start automatically at  boot || Demon-Reload
+    command: '/bin/systemctl daemon-reload'
+
+  - name: Enable ES as a service
+    command: '/bin/systemctl enable elasticsearch.service'
+
+#  - name: Start ES as a service now
+#    service:
+#      name: elasticsearch
+#      state: restarted
+
+#  - name: Wait for 10 sec
+#    wait_for:
+#      port: 9200
+#      delay: 10
+
+
+#  - name: Check if ES is running or FAIL here
+#    command: 'curl http://"{{ inventory_hostname }}":9200'
+#    register: curl_result
+#    failed_when: "'Failed' in curl_result.stderr"

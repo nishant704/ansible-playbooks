@@ -1,0 +1,67 @@
+---
+#  - name: Generate Sequence ID for hostnames
+#    when: inventory_hostname in groups['esmaster']
+    #debug: msg="{{ item }}"
+    #with_sequence: start="{{ startindex }}" end="{{ client_instance_count }}" format=%02d
+#    set_fact:
+#      indexed_hostname_master: "{{ 'mayassar-master{0:02d}'.format(play_hosts.index(inventory_hostname)+1)}}"
+
+#  - name: show the hostnames
+#    when: inventory_hostname in groups['esmaster']
+#    debug:
+#      msg: "{{ hostvars[item].indexed_hostname_master }}"
+#    with_items: "{{ groups['esmaster'] }}"
+#    register: names
+
+
+#  - name: Configure Hostname for Master Node
+#    when: inventory_hostname in groups['esmaster']
+#    hostname:
+#      name: "{{ indexed_hostname_master }}"
+#    with_items:
+#      - "{{ groups['esmaster'] }}"
+
+  - name: Configure the Dedicated ES MASTER
+    when: inventory_hostname in groups['esmaster']
+    lineinfile:
+      path: /etc/elasticsearch/elasticsearch.yml
+      insertafter: EOF
+      line: "{{ item }}"
+    with_items:
+      - 'node.master: true'
+      - 'node.data: false'
+      - 'node.ingest: false'
+      - 'discovery.zen.minimum_master_nodes: 2'
+      - '######################'
+      - 'path.logs: "{{ es_log_path }}"'
+
+  - name: Configure the master node's LVM Directory
+    when: inventory_hostname in groups['esmaster']
+    file:
+      path: /elasticsearch
+      owner: elasticsearch
+      group: elasticsearch
+      recurse: yes
+
+
+  - name: Re-Start Elasticsearch
+    when: inventory_hostname in groups['esmaster']
+    service:
+      name: elasticsearch
+      state: restarted
+
+  - name: Wait 10 sec to check if 9200 is alive
+    when: inventory_hostname in groups['esmaster']
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      port: 9200
+      delay: 10
+      timeout: 100
+    ignore_errors: no
+
+
+  - name: Check if ES is running or FAIL here
+    when: inventory_hostname in groups['esmaster']
+    command: 'curl http://"{{ inventory_hostname }}":9200'
+    register: curl_result
+    failed_when: "'Failed' in curl_result.stderr"

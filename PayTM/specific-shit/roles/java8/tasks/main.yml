@@ -1,0 +1,14 @@
+---
+#- name: Add Java repository ppa
+#  apt_repository:
+#   repo: ppa:webupd8team/java
+
+- name: Update the apt
+  apt:
+    update_cache: yes
+
+- name: Install the Java 8 package
+  apt:
+   name: openjdk-8-jre
+   state: present
+   update_cache: yes

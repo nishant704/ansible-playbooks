@@ -1,0 +1,76 @@
+---
+  - name: Add APT Repository
+    apt_repository:
+      repo: deb https://packagecloud.io/grafana/stable/debian/ jessie main
+      state: present
+
+  - name: Add an Apt signing key, uses whichever key is at the URL
+    apt_key:
+      url: https://packagecloud.io/gpg.key
+      state: present
+
+  - name: Update the repository
+    apt:
+      update_cache: yes
+
+  - name: Install Grafana and transport https
+    apt:
+        name: "{{ item }}"
+    with_items:
+      - grafana
+      - apt-transport-https
+      - nginx
+
+#  - name: Run Grafana on Port 80 instead of 3000
+#    lineinfile:
+#       path: /etc/grafana/grafana.ini
+#       regexp: '^;http_port ='
+#       line: 'http_port = 80'
+
+#  - name: Bind grafna-server Process to privilaged port
+#    command: setcap 'cap_net_bind_service=+ep' /usr/sbin/grafana-server
+
+#########################################################
+  - name: Comment the default.ini for ADMIN username
+    lineinfile:
+      path: /usr/share/grafana/conf/defaults.ini
+      regexp: '^#admin_user = admin'
+      line: 'admin_user = admin'
+
+  - name: Comment the default.ini for ADMIN password
+    lineinfile:
+      path: /usr/share/grafana/conf/defaults.ini
+      regexp: '^#admin_password = admin'
+      line: 'admin_password = admin'
+
+##########################################################
+  - name: Replace The config
+    template:
+      src: grafana.ini.j2
+      dest: /etc/grafana/grafana.ini
+      backup: yes
+
+  - name: Replace ldap config
+    template:
+      src: ldap.toml.j2
+      dest: /etc/grafana/ldap.toml
+      backup: yes
+
+  - name: Configure Nginx to serve Grafana
+    template:
+      src: default.j2
+      dest: /etc/nginx/sites-available/default
+
+  - name: Start Nginx as a service now
+    service:
+      name: nginx
+      state: restarted
+
+
+  - name: Start Grafana as a service
+    service:
+      name: grafana-server
+      state: restarted
+
+  - name: Configure the Grafana server to start at boot time
+    command: 'sudo update-rc.d grafana-server defaults'

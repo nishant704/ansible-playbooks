@@ -1,0 +1,26 @@
+#!/bin/bash
+cat > /tmp/{{ username }}.ovpn <<- END
+client
+nobind
+dev tun
+key-direction 1
+remote-cert-tls server
+remote {{ ipify_public_ip }} 1194 udp
+key-direction 1
+cipher AES-256-CBC
+auth-user-pass
+auth-nocache
+reneg-sec 0
+<ca>
+$(cat /etc/openvpn/easy-rsa/keys/ca.crt)
+</ca>
+<cert>
+$(openssl x509 -in /etc/openvpn/easy-rsa/keys/{{ username }}.crt)
+</cert>
+<key>
+$(cat /etc/openvpn/easy-rsa/keys/{{ username }}.key)
+</key>
+<tls-auth>
+$(cat /etc/openvpn/easy-rsa/keys/ta.key)
+</tls-auth>
+END

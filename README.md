@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-#Ansible Playbook for all the base monitors 
-=======
 # README #
 
 Starting of Ansible Playbooks 
@@ -22,4 +19,3 @@ Create a Seprate WIP and create PR's
 ### Who do I talk to? ###
 
 Nishant Singh 
->>>>>>> e63068bc7dfd0727471565b22a0a7e818654f157
